@@ -1,0 +1,417 @@
+[root@OVDT-PR-LDB10 ~]# lsblk
+NAME                    MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda                       8:0    0   64G  0 disk
+├─sda1                    8:1    0  500M  0 part /boot
+├─sda2                    8:2    0   63G  0 part
+│ ├─rootvg-tmplv        253:1    0  6.3G  0 lvm  /tmp
+│ ├─rootvg-usrlv        253:2    0 18.9G  0 lvm  /usr
+│ ├─rootvg-homelv       253:3    0  6.3G  0 lvm  /home
+│ ├─rootvg-varlv        253:4    0 22.1G  0 lvm  /var
+│ └─rootvg-rootlv       253:5    0  9.5G  0 lvm  /
+├─sda14                   8:14   0    4M  0 part
+└─sda15                   8:15   0  495M  0 part /boot/efi
+sdb                       8:16   0  256G  0 disk
+└─sdb1                    8:17   0  256G  0 part /mnt
+sdc                       8:32   0    8T  0 disk
+└─sdc1                    8:33   0    8T  0 part
+  └─vg_data00-lv_data00 253:0    0    8T  0 lvm  /data-00
+[root@OVDT-PR-LDB10 ~]# vgs
+  VG        #PV #LV #SN Attr   VSize   VFree
+  rootvg      1   5   0 wz--n- <63.02g    0
+  vg_data00   1   1   0 wz--n-  <8.00t    0
+[root@OVDT-PR-LDB10 ~]# lvs
+  LV        VG        Attr       LSize   Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  homelv    rootvg    -wi-ao----   6.30g
+  rootlv    rootvg    -wi-ao----   9.45g
+  tmplv     rootvg    -wi-ao----  <6.30g
+  usrlv     rootvg    -wi-ao---- <18.91g
+  varlv     rootvg    -wi-ao---- <22.06g
+  lv_data00 vg_data00 -wi-ao----  <8.00t
+[root@OVDT-PR-LDB10 ~]# pvs
+  PV         VG        Fmt  Attr PSize   PFree
+  /dev/sda2  rootvg    lvm2 a--  <63.02g    0
+  /dev/sdc1  vg_data00 lvm2 a--   <8.00t    0
+[root@OVDT-PR-LDB10 ~]# clear
+[root@OVDT-PR-LDB10 ~]# lsblk
+NAME                    MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda                       8:0    0   64G  0 disk
+├─sda1                    8:1    0  500M  0 part /boot
+├─sda2                    8:2    0   63G  0 part
+│ ├─rootvg-tmplv        253:1    0  6.3G  0 lvm  /tmp
+│ ├─rootvg-usrlv        253:2    0 18.9G  0 lvm  /usr
+│ ├─rootvg-homelv       253:3    0  6.3G  0 lvm  /home
+│ ├─rootvg-varlv        253:4    0 22.1G  0 lvm  /var
+│ └─rootvg-rootlv       253:5    0  9.5G  0 lvm  /
+├─sda14                   8:14   0    4M  0 part
+└─sda15                   8:15   0  495M  0 part /boot/efi
+sdb                       8:16   0  256G  0 disk
+└─sdb1                    8:17   0  256G  0 part /mnt
+sdc                       8:32   0    8T  0 disk
+└─sdc1                    8:33   0    8T  0 part
+  └─vg_data00-lv_data00 253:0    0    8T  0 lvm  /data-00
+[root@OVDT-PR-LDB10 ~]# vgs
+  VG        #PV #LV #SN Attr   VSize   VFree
+  rootvg      1   5   0 wz--n- <63.02g    0
+  vg_data00   1   1   0 wz--n-  <8.00t    0
+[root@OVDT-PR-LDB10 ~]# sudo pvs
+  PV         VG        Fmt  Attr PSize   PFree
+  /dev/sda2  rootvg    lvm2 a--  <63.02g    0
+  /dev/sdc1  vg_data00 lvm2 a--   <8.00t    0
+[root@OVDT-PR-LDB10 ~]# vgremove vg_data00
+Do you really want to remove volume group "vg_data00" containing 1 logical volumes? [y/n]: y
+  Logical volume vg_data00/lv_data00 contains a filesystem in use.
+[root@OVDT-PR-LDB10 ~]# vgs
+  VG        #PV #LV #SN Attr   VSize   VFree
+  rootvg      1   5   0 wz--n- <63.02g    0
+  vg_data00   1   1   0 wz--n-  <8.00t    0
+[root@OVDT-PR-LDB10 ~]# lvremove lv_data00
+  Volume group "lv_data00" not found
+  Cannot process volume group lv_data00
+[root@OVDT-PR-LDB10 ~]# umount data-00
+umount: data-00: no mount point specified.
+[root@OVDT-PR-LDB10 ~]# umount /data-00
+[root@OVDT-PR-LDB10 ~]# lsblk
+NAME                    MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda                       8:0    0   64G  0 disk
+├─sda1                    8:1    0  500M  0 part /boot
+├─sda2                    8:2    0   63G  0 part
+│ ├─rootvg-tmplv        253:1    0  6.3G  0 lvm  /tmp
+│ ├─rootvg-usrlv        253:2    0 18.9G  0 lvm  /usr
+│ ├─rootvg-homelv       253:3    0  6.3G  0 lvm  /home
+│ ├─rootvg-varlv        253:4    0 22.1G  0 lvm  /var
+│ └─rootvg-rootlv       253:5    0  9.5G  0 lvm  /
+├─sda14                   8:14   0    4M  0 part
+└─sda15                   8:15   0  495M  0 part /boot/efi
+sdb                       8:16   0  256G  0 disk
+└─sdb1                    8:17   0  256G  0 part /mnt
+sdc                       8:32   0    8T  0 disk
+└─sdc1                    8:33   0    8T  0 part
+  └─vg_data00-lv_data00 253:0    0    8T  0 lvm
+[root@OVDT-PR-LDB10 ~]# lvremove lv_data00
+  Volume group "lv_data00" not found
+  Cannot process volume group lv_data00
+[root@OVDT-PR-LDB10 ~]# vgremove vg_data00
+Do you really want to remove volume group "vg_data00" containing 1 logical volumes? [y/n]: y
+Do you really want to remove active logical volume vg_data00/lv_data00? [y/n]: y
+  Logical volume "lv_data00" successfully removed.
+  Volume group "vg_data00" successfully removed
+[root@OVDT-PR-LDB10 ~]# vgs
+  VG     #PV #LV #SN Attr   VSize   VFree
+  rootvg   1   5   0 wz--n- <63.02g    0
+[root@OVDT-PR-LDB10 ~]# lvs
+  LV     VG     Attr       LSize   Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  homelv rootvg -wi-ao----   6.30g
+  rootlv rootvg -wi-ao----   9.45g
+  tmplv  rootvg -wi-ao----  <6.30g
+  usrlv  rootvg -wi-ao---- <18.91g
+  varlv  rootvg -wi-ao---- <22.06g
+[root@OVDT-PR-LDB10 ~]# lsblk
+NAME              MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda                 8:0    0   64G  0 disk
+├─sda1              8:1    0  500M  0 part /boot
+├─sda2              8:2    0   63G  0 part
+│ ├─rootvg-tmplv  253:1    0  6.3G  0 lvm  /tmp
+│ ├─rootvg-usrlv  253:2    0 18.9G  0 lvm  /usr
+│ ├─rootvg-homelv 253:3    0  6.3G  0 lvm  /home
+│ ├─rootvg-varlv  253:4    0 22.1G  0 lvm  /var
+│ └─rootvg-rootlv 253:5    0  9.5G  0 lvm  /
+├─sda14             8:14   0    4M  0 part
+└─sda15             8:15   0  495M  0 part /boot/efi
+sdb                 8:16   0  256G  0 disk
+└─sdb1              8:17   0  256G  0 part /mnt
+sdc                 8:32   0    8T  0 disk
+└─sdc1              8:33   0    8T  0 part
+[root@OVDT-PR-LDB10 ~]# pvs
+  PV         VG     Fmt  Attr PSize   PFree
+  /dev/sda2  rootvg lvm2 a--  <63.02g     0
+  /dev/sdc1         lvm2 ---   <8.00t <8.00t
+[root@OVDT-PR-LDB10 ~]# vgcreate vg-data00 /dev/sdc1
+  Volume group "vg-data00" successfully created
+[root@OVDT-PR-LDB10 ~]# vgs
+  VG        #PV #LV #SN Attr   VSize   VFree
+  rootvg      1   5   0 wz--n- <63.02g     0
+  vg-data00   1   0   0 wz--n-  <8.00t <8.00t
+[root@OVDT-PR-LDB10 ~]# lsblk
+NAME              MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda                 8:0    0   64G  0 disk
+├─sda1              8:1    0  500M  0 part /boot
+├─sda2              8:2    0   63G  0 part
+│ ├─rootvg-tmplv  253:1    0  6.3G  0 lvm  /tmp
+│ ├─rootvg-usrlv  253:2    0 18.9G  0 lvm  /usr
+│ ├─rootvg-homelv 253:3    0  6.3G  0 lvm  /home
+│ ├─rootvg-varlv  253:4    0 22.1G  0 lvm  /var
+│ └─rootvg-rootlv 253:5    0  9.5G  0 lvm  /
+├─sda14             8:14   0    4M  0 part
+└─sda15             8:15   0  495M  0 part /boot/efi
+sdb                 8:16   0  256G  0 disk
+└─sdb1              8:17   0  256G  0 part /mnt
+sdc                 8:32   0    8T  0 disk
+└─sdc1              8:33   0    8T  0 part
+[root@OVDT-PR-LDB10 ~]# lvcreate -n archive -L +500G vg-data00
+WARNING: xfs signature detected on /dev/vg-data00/archive at offset 0. Wipe it? [y/n]: y
+  Wiping xfs signature on /dev/vg-data00/archive.
+  Logical volume "archive" created.
+[root@OVDT-PR-LDB10 ~]# lvcreate -n vg-data00 -L +3T vg-data00
+  Logical volume "vg-data00" created.
+[root@OVDT-PR-LDB10 ~]# lvremove vg-data00
+Do you really want to remove active logical volume vg-data00/archive? [y/n]: y
+  Logical volume "archive" successfully removed.
+Do you really want to remove active logical volume vg-data00/vg-data00? [y/n]: y
+  Logical volume "vg-data00" successfully removed.
+[root@OVDT-PR-LDB10 ~]# vgs
+  VG        #PV #LV #SN Attr   VSize   VFree
+  rootvg      1   5   0 wz--n- <63.02g     0
+  vg-data00   1   0   0 wz--n-  <8.00t <8.00t
+[root@OVDT-PR-LDB10 ~]# lvs
+  LV     VG     Attr       LSize   Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  homelv rootvg -wi-ao----   6.30g
+  rootlv rootvg -wi-ao----   9.45g
+  tmplv  rootvg -wi-ao----  <6.30g
+  usrlv  rootvg -wi-ao---- <18.91g
+  varlv  rootvg -wi-ao---- <22.06g
+[root@OVDT-PR-LDB10 ~]# lvcreate -n archive -L +500G vg-data00
+  Logical volume "archive" created.
+[root@OVDT-PR-LDB10 ~]# lvcreate -n oradata1 -L +3T vg-data00
+  Logical volume "oradata1" created.
+[root@OVDT-PR-LDB10 ~]# lvcreate -n backup -L +1T vg-data00
+  Logical volume "backup" created.
+[root@OVDT-PR-LDB10 ~]# lvcreate -n oracledb -L +200G vg-data00
+  Logical volume "oracledb" created.
+[root@OVDT-PR-LDB10 ~]# lvcreate -n redolog -L +100G vg-data00
+  Logical volume "redolog" created.
+[root@OVDT-PR-LDB10 ~]# lvs
+  LV       VG        Attr       LSize   Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  homelv   rootvg    -wi-ao----   6.30g
+  rootlv   rootvg    -wi-ao----   9.45g
+  tmplv    rootvg    -wi-ao----  <6.30g
+  usrlv    rootvg    -wi-ao---- <18.91g
+  varlv    rootvg    -wi-ao---- <22.06g
+  archive  vg-data00 -wi-a----- 500.00g
+  backup   vg-data00 -wi-a-----   1.00t
+  oracledb vg-data00 -wi-a----- 200.00g
+  oradata1 vg-data00 -wi-a-----   3.00t
+  redolog  vg-data00 -wi-a----- 100.00g
+[root@OVDT-PR-LDB10 ~]# vgs
+  VG        #PV #LV #SN Attr   VSize   VFree
+  rootvg      1   5   0 wz--n- <63.02g     0
+  vg-data00   1   5   0 wz--n-  <8.00t <3.22t
+[root@OVDT-PR-LDB10 ~]# mkfs.xfs /dev/vg-data00/archive
+meta-data=/dev/vg-data00/archive isize=512    agcount=4, agsize=32768000 blks
+         =                       sectsz=4096  attr=2, projid32bit=1
+         =                       crc=1        finobt=1, sparse=1, rmapbt=0
+         =                       reflink=1    bigtime=0 inobtcount=0
+data     =                       bsize=4096   blocks=131072000, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0, ftype=1
+log      =internal log           bsize=4096   blocks=64000, version=2
+         =                       sectsz=4096  sunit=1 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+Discarding blocks...Done.
+[root@OVDT-PR-LDB10 ~]# mkfs.xfs /dev/vg-data00/backup
+meta-data=/dev/vg-data00/backup  isize=512    agcount=4, agsize=67108864 blks
+         =                       sectsz=4096  attr=2, projid32bit=1
+         =                       crc=1        finobt=1, sparse=1, rmapbt=0
+         =                       reflink=1    bigtime=0 inobtcount=0
+data     =                       bsize=4096   blocks=268435456, imaxpct=5
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0, ftype=1
+log      =internal log           bsize=4096   blocks=131072, version=2
+         =                       sectsz=4096  sunit=1 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+Discarding blocks...Done.
+[root@OVDT-PR-LDB10 ~]# mkfs.xfs /dev/vg-data00/oracledb
+meta-data=/dev/vg-data00/oracledb isize=512    agcount=4, agsize=13107200 blks
+         =                       sectsz=4096  attr=2, projid32bit=1
+         =                       crc=1        finobt=1, sparse=1, rmapbt=0
+         =                       reflink=1    bigtime=0 inobtcount=0
+data     =                       bsize=4096   blocks=52428800, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0, ftype=1
+log      =internal log           bsize=4096   blocks=25600, version=2
+         =                       sectsz=4096  sunit=1 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+Discarding blocks...Done.
+[root@OVDT-PR-LDB10 ~]# mkfs.xfs /dev/vg-data00/oradata1
+meta-data=/dev/vg-data00/oradata1 isize=512    agcount=4, agsize=201326592 blks
+         =                       sectsz=4096  attr=2, projid32bit=1
+         =                       crc=1        finobt=1, sparse=1, rmapbt=0
+         =                       reflink=1    bigtime=0 inobtcount=0
+data     =                       bsize=4096   blocks=805306368, imaxpct=5
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0, ftype=1
+log      =internal log           bsize=4096   blocks=393216, version=2
+         =                       sectsz=4096  sunit=1 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+Discarding blocks...Done.
+[root@OVDT-PR-LDB10 ~]# mkfs.xfs /dev/vg-data00/redolog
+meta-data=/dev/vg-data00/redolog isize=512    agcount=4, agsize=6553600 blks
+         =                       sectsz=4096  attr=2, projid32bit=1
+         =                       crc=1        finobt=1, sparse=1, rmapbt=0
+         =                       reflink=1    bigtime=0 inobtcount=0
+data     =                       bsize=4096   blocks=26214400, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0, ftype=1
+log      =internal log           bsize=4096   blocks=12800, version=2
+         =                       sectsz=4096  sunit=1 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+Discarding blocks...Done.
+[root@OVDT-PR-LDB10 ~]# mkdir [root@OVDT-PR-LDB10 ~]# lvs
+[root@OVDT-PR-LDB10 ~]#   LV       VG        Attr       LSize   Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+-bash: LV: command not found
+[root@OVDT-PR-LDB10 ~]#   homelv   rootvg    -wi-ao----   6.30g
+-bash: homelv: command not found
+[root@OVDT-PR-LDB10 ~]#   rootlv   rootvg    -wi-ao----   9.45g
+-bash: rootlv: command not found
+[root@OVDT-PR-LDB10 ~]#   tmplv    rootvg    -wi-ao----  <6.30g
+-bash: 6.30g: No such file or directory
+[root@OVDT-PR-LDB10 ~]#   usrlv    rootvg    -wi-ao---- <18.91g
+-bash: 18.91g: No such file or directory
+[root@OVDT-PR-LDB10 ~]#   varlv    rootvg    -wi-ao---- <22.06g
+-bash: 22.06g: No such file or directory
+[root@OVDT-PR-LDB10 ~]#   archive  vg-data00 -wi-a----- 500.00g
+-bash: archive: command not found
+[root@OVDT-PR-LDB10 ~]#   backup   vg-data00 -wi-a-----   1.00t
+-bash: backup: command not found
+[root@OVDT-PR-LDB10 ~]#   oracledb vg-data00 -wi-a----- 200.00g
+-bash: oracledb: command not found
+[root@OVDT-PR-LDB10 ~]#   oradata1 vg-data00 -wi-a-----   3.00t
+-bash: oradata1: command not found
+[root@OVDT-PR-LDB10 ~]#   redolog  vg-data00 -wi-a----- 100.00g
+-bash: redolog: command not found
+[root@OVDT-PR-LDB10 ~]# mkdir /archive /oradata1 /backup /oracledb /redolog
+[root@OVDT-PR-LDB10 ~]# chmod 777 /archive /oradata1 /backup /oracledb /redolog
+[root@OVDT-PR-LDB10 ~]# ll /
+total 36
+-rw-r--r--.   1 root root    0 Jul 10 14:26 1
+drwxrwxrwx.   2 root root    6 Jul 12 11:44 archive
+drwxrwxrwx.   2 root root    6 Jul 12 11:44 backup
+lrwxrwxrwx.   1 root root    7 Jun 21  2021 bin -> usr/bin
+dr-xr-xr-x.   5 root root 4096 Jul 10 14:24 boot
+drwxr-xr-x.   2 root root    6 Jul 10 14:08 data-00
+drwxr-xr-x.  21 root root 3360 Jul 12 11:35 dev
+drwxr-xr-x. 115 root root 8192 Jul 12 09:46 etc
+drwxr-xr-x.  20 root root 4096 Jul 11 08:01 home
+lrwxrwxrwx.   1 root root    7 Jun 21  2021 lib -> usr/lib
+lrwxrwxrwx.   1 root root    9 Jun 21  2021 lib64 -> usr/lib64
+drwxr-xr-x.   2 root root    6 Jun 21  2021 media
+drwxr-xr-x.   4 root root 4096 Jul 11 08:28 mnt
+drwxr-xr-x.   7 root root   76 Jul 12 08:52 opt
+drwxrwxrwx.   2 root root    6 Jul 12 11:44 oracledb
+drwxrwxrwx.   2 root root    6 Jul 12 11:44 oradata1
+dr-xr-xr-x. 276 root root    0 Jul 12 09:34 proc
+drwxrwxrwx.   2 root root    6 Jul 12 11:44 redolog
+dr-xr-x---.  11 root root 4096 Jul 12 11:43 root
+drwxr-xr-x.  37 root root 1240 Jul 12 09:35 run
+lrwxrwxrwx.   1 root root    8 Jun 21  2021 sbin -> usr/sbin
+drwxr-xr-x.   2 root root    6 Jun 21  2021 srv
+dr-xr-xr-x.  13 root root    0 Jul 12 09:34 sys
+drwxrwxrwt.  10 root root 4096 Jul 12 11:42 tmp
+drwxr-xr-x.  13 root root  162 Jul 12 08:54 usr
+drwxr-xr-x.  21 root root 4096 Jul 12 09:34 var
+[root@OVDT-PR-LDB10 ~]# ll -h
+total 16M
+drwx------. 2 root root   6 Jul 12 11:43 '~]#'
+drwxr-xr-x. 2 1001  127  38 Jun 12 23:49  azcopy_linux_amd64_10.25.1
+-rw-------. 1 root root 16M Jun 12 23:56  downloadazcopy-v10-linux
+drwx------. 2 root root   6 Jul 12 11:43  lvs
+drwx------. 2 root root   6 Jul 12 11:43 '[root@OVDT-PR-LDB10'
+[root@OVDT-PR-LDB10 ~]# ll -trh
+total 16M
+drwxr-xr-x. 2 1001  127  38 Jun 12 23:49  azcopy_linux_amd64_10.25.1
+-rw-------. 1 root root 16M Jun 12 23:56  downloadazcopy-v10-linux
+drwx------. 2 root root   6 Jul 12 11:43 '[root@OVDT-PR-LDB10'
+drwx------. 2 root root   6 Jul 12 11:43  lvs
+drwx------. 2 root root   6 Jul 12 11:43 '~]#'
+[root@OVDT-PR-LDB10 ~]# ll / -trh
+total 36K
+drwxr-xr-x.   2 root root    6 Jun 21  2021 srv
+lrwxrwxrwx.   1 root root    8 Jun 21  2021 sbin -> usr/sbin
+drwxr-xr-x.   2 root root    6 Jun 21  2021 media
+lrwxrwxrwx.   1 root root    9 Jun 21  2021 lib64 -> usr/lib64
+lrwxrwxrwx.   1 root root    7 Jun 21  2021 lib -> usr/lib
+lrwxrwxrwx.   1 root root    7 Jun 21  2021 bin -> usr/bin
+drwxr-xr-x.   2 root root    6 Jul 10 14:08 data-00
+dr-xr-xr-x.   5 root root 4.0K Jul 10 14:24 boot
+-rw-r--r--.   1 root root    0 Jul 10 14:26 1
+drwxr-xr-x.  20 root root 4.0K Jul 11 08:01 home
+drwxr-xr-x.   4 root root 4.0K Jul 11 08:28 mnt
+drwxr-xr-x.   7 root root   76 Jul 12 08:52 opt
+drwxr-xr-x.  13 root root  162 Jul 12 08:54 usr
+dr-xr-xr-x. 275 root root    0 Jul 12 09:34 proc
+dr-xr-xr-x.  13 root root    0 Jul 12 09:34 sys
+drwxr-xr-x.  21 root root 4.0K Jul 12 09:34 var
+drwxr-xr-x.  37 root root 1.3K Jul 12 09:35 run
+drwxr-xr-x. 115 root root 8.0K Jul 12 09:46 etc
+drwxr-xr-x.  21 root root 3.3K Jul 12 11:35 dev
+drwxrwxrwt.  10 root root 4.0K Jul 12 11:42 tmp
+dr-xr-x---.  11 root root 4.0K Jul 12 11:43 root
+drwxrwxrwx.   2 root root    6 Jul 12 11:44 oradata1
+drwxrwxrwx.   2 root root    6 Jul 12 11:44 archive
+drwxrwxrwx.   2 root root    6 Jul 12 11:44 redolog
+drwxrwxrwx.   2 root root    6 Jul 12 11:44 oracledb
+drwxrwxrwx.   2 root root    6 Jul 12 11:44 backup
+[root@OVDT-PR-LDB10 ~]# vgs
+  VG        #PV #LV #SN Attr   VSize   VFree
+  rootvg      1   5   0 wz--n- <63.02g     0
+  vg-data00   1   5   0 wz--n-  <8.00t <3.22t
+[root@OVDT-PR-LDB10 ~]# vi /etc/fstab
+[root@OVDT-PR-LDB10 ~]# cat /etc/fstab
+
+#
+# /etc/fstab
+# Created by anaconda on Wed May 19 06:04:37 2021
+#
+# Accessible filesystems, by reference, are maintained under '/dev/disk/'.
+# See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info.
+#
+# After editing this file, run 'systemctl daemon-reload' to update systemd
+# units generated from this file.
+#
+/dev/mapper/rootvg-rootlv /                       xfs     defaults        0 0
+UUID=9e7ab8f1-d59d-466a-bdba-5713fae2666b /boot                   xfs     defaults        0 0
+UUID=A6F5-1D98          /boot/efi               vfat    defaults,uid=0,gid=0,umask=077,shortname=winnt 0 2
+/dev/mapper/rootvg-homelv /home                   xfs     defaults        0 0
+/dev/mapper/rootvg-tmplv /tmp                    xfs     defaults        0 0
+/dev/mapper/rootvg-usrlv /usr                    xfs     defaults        0 0
+/dev/mapper/rootvg-varlv /var                    xfs     defaults        0 0
+/dev/vg_data00/lv_data00 /data-00 xfs defaults 0 0
+hqew1lxsaefss01.file.core.windows.net:/hqew1lxsaefss01/hqew1lxsapfss01-kdump /mnt/linux-kdump nfs nofail,vers=4,minorversion=1,sec=sys 0 0
+/dev/disk/cloud/azure_resource-part1    /mnt    auto    defaults,nofail,x-systemd.requires=cloud-init.service,comment=cloudconfig       0       2
+/dev/vg-data00/archive /archive xfs     defaults,nofail     0 0
+[root@OVDT-PR-LDB10 ~]# mount -a
+mount: /data-00: special device /dev/vg_data00/lv_data00 does not exist.
+mount: (hint) your fstab has been modified, but systemd still uses
+       the old version; use 'systemctl daemon-reload' to reload.
+[root@OVDT-PR-LDB10 ~]# vi /etc/fstab
+[root@OVDT-PR-LDB10 ~]# mount -a
+[root@OVDT-PR-LDB10 ~]# vi /etc/fstab
+[root@OVDT-PR-LDB10 ~]# mount -a
+mount: (hint) your fstab has been modified, but systemd still uses
+       the old version; use 'systemctl daemon-reload' to reload.
+[root@OVDT-PR-LDB10 ~]# lsblk
+NAME                    MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda                       8:0    0   64G  0 disk
+├─sda1                    8:1    0  500M  0 part /boot
+├─sda2                    8:2    0   63G  0 part
+│ ├─rootvg-tmplv        253:1    0  6.3G  0 lvm  /tmp
+│ ├─rootvg-usrlv        253:2    0 18.9G  0 lvm  /usr
+│ ├─rootvg-homelv       253:3    0  6.3G  0 lvm  /home
+│ ├─rootvg-varlv        253:4    0 22.1G  0 lvm  /var
+│ └─rootvg-rootlv       253:5    0  9.5G  0 lvm  /
+├─sda14                   8:14   0    4M  0 part
+└─sda15                   8:15   0  495M  0 part /boot/efi
+sdb                       8:16   0  256G  0 disk
+└─sdb1                    8:17   0  256G  0 part /mnt
+sdc                       8:32   0    8T  0 disk
+└─sdc1                    8:33   0    8T  0 part
+  ├─vg--data00-archive  253:0    0  500G  0 lvm  /archive
+  ├─vg--data00-oradata1 253:6    0    3T  0 lvm  /oradata1
+  ├─vg--data00-backup   253:7    0    1T  0 lvm  /backup
+  ├─vg--data00-oracledb 253:8    0  200G  0 lvm  /oracledb
+  └─vg--data00-redolog  253:9    0  100G  0 lvm  /redolog
+[root@OVDT-PR-LDB10 ~]# mount -a
+[root@OVDT-PR-LDB10 ~]# vgs
+  VG        #PV #LV #SN Attr   VSize   VFree
+  rootvg      1   5   0 wz--n- <63.02g     0
+  vg-data00   1   5   0 wz--n-  <8.00t <3.22t
+[root@OVDT-PR-LDB10 ~]#
